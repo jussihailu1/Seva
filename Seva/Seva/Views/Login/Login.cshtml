@@ -1,0 +1,62 @@
+﻿@using System.Text.Encodings.Web
+@model Seva.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<h1>Login</h1>
+
+<hr class="hr"/>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Login">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email"
+                       class="form-control"
+                       id="emailInput"
+                       placeholder="Email"
+                       type="email" />
+                <span asp-validation-for="Email" id="checkEmailResult" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" type="password" placeholder="Password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" id="loginBtn" value="Sign in" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<a href="@Url.Action("Register")">Or create an account here</a>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $('#emailInput').on('change',
+            function () {
+                var emailToCheck = document.getElementById('emailInput').value;
+                $.ajax({        // Do this asynchronously
+                    type: 'POST',                    // GET-method, so data is passed through URL lol
+                    url: '/CheckEmailExistance/' + emailToCheck,   // This is the URL we're calling, should match routing scheme
+                    success: function (result) {    // Dit is de Json torrie die gereturned wordt vanuit de controller.
+                        if (result == "Does not exist") {
+                            if (document.getElementById('checkEmailResult').innerHTML == "") {
+                                document.getElementById('checkEmailResult').innerHTML = "Email does not exist";
+                            }
+                        }
+                    },
+                    error: function (error) {
+                        console.log("Error");
+                        console.log(error);
+                    }
+                });
+            });
+    </script>
+}

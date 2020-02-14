@@ -1,0 +1,160 @@
+﻿@model Seva.ViewModels.AdminUserViewModel
+
+@{
+    ViewData["Title"] = "ViewProvider";
+
+    string inactive = "";
+    string btnValue = "inactive";
+    if (Model.Status == "Inactive")
+    {
+        inactive = "Inactive";
+        btnValue = "active";
+    }
+}
+
+@* TODO(fat): ADD USER PROFILE PICTURE *@
+
+<h1>@Model.FullName <span class="text-danger">@inactive</span></h1>
+
+<ul class="nav nav-tabs">
+    <li class="nav-item"><a class="nav-link active" role="tab" data-toggle="tab" href="#adminUser">User</a></li>
+    <li class="nav-item"><a class="nav-link" role="tab" data-toggle="tab" href="#adminUserOfferedServices">Offered services</a></li>
+    <li class="nav-item"><a class="nav-link" role="tab" data-toggle="tab" href="#adminUserUsedServices">Used services</a></li>
+</ul>
+
+<hr class="hr"/>
+
+<div class="tab-content" style="box-shadow: 0px 0px 50px 10px black; padding: 3%">
+    <div class="tab-pane active" role="tabpanel" id="adminUser">
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.FullName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.FullName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Email)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.AverageRating)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.AverageRating)
+            </dd>
+            <dt class="col-sm-2">
+                Services offered
+            </dt>
+            <dd class="col-sm-10">
+                @Model.OfferedServicesCount
+            </dd>
+            <dt class="col-sm-2">
+                Services sold
+            </dt>
+            <dd class="col-sm-10">
+                @Model.SoldServicesCount
+            </dd>
+            <dt class="col-sm-2">
+                Services used
+            </dt>
+            <dd class="col-sm-10">
+                @Model.UsedServicesCount
+            </dd>
+        </dl>
+        <a href="#" id="setUserBtn">Set @btnValue</a>
+    </div>
+    <div class="tab-pane" role="tabpanel" id="adminUserOfferedServices">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Average rating</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var offeredService in Model.OfferedServices)
+                {
+                    <tr class="@offeredService.Name @offeredService.Category @offeredService.Price @offeredService.AverageRating hover"
+                        onclick="location.href = '@Url.Action("ViewOfferedService", "Admin", new {offeredServiceId = offeredService.Id})'">
+                        <td>@offeredService.Name</td>
+                        <td>@offeredService.Category</td>
+                        <td>@offeredService.Price.ToString("C")</td>
+                        <td>@offeredService.AverageRating</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane" role="tabpanel" id="adminUserUsedServices">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Used service</th>
+                    <th>Purchase date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var usedService in Model.UsedServices)
+                {
+                    <tr class="usedService hover @usedService.DateOfPurchase">
+                        <td>@usedService.OfferedService.Name</td>
+                        <td>@usedService.DateOfPurchase</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close" style="float: right">&times;</span>
+        <div class="modal-content-inner">
+            <h4 class="modal-text">Confirm</h4>
+            <p class="modal-text">Are you sure you want to set the user <b>@btnValue</b>?</p>
+            <input id="confirmStatusBtn"
+                   class="btn btn-primary"
+                   type="button"
+                   value="Confirm"
+                   onclick="location.href = '@Url.Action("SetUserStatus","Admin", new { userId = Model.Id})'" />
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        console.log('@inactive');
+        var modal = document.getElementById("myModal");
+        var span = document.getElementsByClassName("close")[0]; // Get the <span> element that closes the modal
+
+        $('#setUserBtn').on('click',
+            function () {
+                modal.style.display = "block";
+            });
+
+        //When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+}

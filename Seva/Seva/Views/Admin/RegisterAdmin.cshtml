@@ -1,0 +1,50 @@
+﻿@model Seva.ViewModels.AdminRegisterViewModel
+
+@{
+    ViewData["Title"] = "RegisterAdmin";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<h1>RegisterAdmin</h1>
+
+<hr class="hr"/>
+<div class="row" style="box-shadow: 0px 0px 50px 10px black; padding: 3%">
+    <div class="col-md-4">
+        <form asp-action="RegisterAdmin">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" type="text" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" type="text" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" type="email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" type="text" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AdminPassword" class="control-label"></label>
+                <input asp-for="AdminPassword" type="password" class="form-control" />
+                <span asp-validation-for="AdminPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" id="adminRegisterBtn" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

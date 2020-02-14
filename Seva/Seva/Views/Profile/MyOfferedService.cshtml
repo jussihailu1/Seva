@@ -1,0 +1,180 @@
+﻿@model Seva.ViewModels.MyOfferedServiceViewModel
+
+@{
+    ViewData["Title"] = "MyOfferedService";
+    string inactive = "";
+    string btnValue = "Set inactive";
+    if (Model.OfferedService.Status == "Inactive")
+    {
+        inactive = "Inactive";
+        btnValue = "Set active";
+    }
+}
+
+<h1>@Model.OfferedService.Name <span id="status" class="text-danger">@inactive</span></h1>
+
+<div class="row" style="width: 100%;box-shadow: 0px 0px 50px 10px black; padding: 3%">
+    @* In deze kolom zit de details list *@
+    <div class="col">
+        @* Voor elke atribuut zo een row *@
+        <div class="row">
+            <div class="col"><b>@Html.DisplayNameFor(model => model.OfferedService.Name)</b></div>
+            <div class="col">@Html.DisplayFor(model => model.OfferedService.Name)</div>
+        </div>
+        <div class="row">
+            <div class="col"><b>@Html.DisplayNameFor(model => model.OfferedService.Category)</b></div>
+            <div class="col">@Html.DisplayFor(model => model.OfferedService.Category)</div>
+        </div>
+        <div class="row">
+            <div class="col"><b>@Html.DisplayNameFor(model => model.OfferedService.Price)</b></div>
+            <div class="col">@Model.OfferedService.Price.ToString("C")</div>
+        </div>
+        <div class="row">
+            <div class="col"><b>Delivery time</b></div>
+            <div class="col">@Model.OfferedService.DeliveryTimeDays day(s), @Model.OfferedService.DeliveryTimeHours hour(s)</div>
+        </div>
+        <div class="row">
+            <div class="col"><b>@Html.DisplayNameFor(model => model.OfferedService.DateOfPost)</b></div>
+            <div class="col">@Html.DisplayFor(model => model.OfferedService.DateOfPost)</div>
+        </div>
+        <div class="row">
+            <div class="col"><b>@Html.DisplayNameFor(model => model.OfferedService.Description)</b></div>
+            <div class="col">@Html.DisplayFor(model => model.OfferedService.Description)</div>
+        </div>
+        @* TODO: Add more info. *@
+        <div class="row">
+            <div class="col" style="margin-top: 2%">
+                <a id="editOfferedServiceLink" href="@Url.Action("EditOfferedService", "Profile", new {offeredServiceId = Model.OfferedService.Id})">Edit this service</a>
+            </div>
+            <div class="col" style="margin-top: 2%">
+                <a href="#" id="statusBtn">@btnValue</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        @* In deze div zit de foto carousel *@
+        <div class="row">
+            <div class="carousel slide" data-ride="carousel" id="carousel" data-interval="false" style="height: 50%; width: 50%;">
+                <div class="carousel-inner" role="listbox">
+                    @if (Model.OfferedService.Images.Count > 0)
+                    {
+
+                        @foreach (var image in Model.OfferedService.Images)
+                        {
+                            string isActive = "";
+                            if (Model.OfferedService.Images.IndexOf(image) == 0)
+                            {
+                                isActive = "active";
+                            }
+                            <div class="carousel-item @isActive">
+                                <img class="w-100 d-block" src="@Url.Content(image)" alt="Slide ImageAsString">
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="carousel-item active">
+                            <img class="w-100 d-block" src="~/img/image not found.png" alt="Slide ImageAsString">
+                        </div>
+                    }
+                </div>
+                @if (Model.OfferedService.Images.Count > 1)
+                {
+                    //Carousel control buttons
+                    <div>
+                        <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                    //Carousel indicators
+                    <ol class="carousel-indicators">
+                        @foreach (var image in Model.OfferedService.Images)
+                        {
+                            string isActive = "";
+                            int index = Model.OfferedService.Images.IndexOf(image);
+                            if (index == 0)
+                            {
+                                isActive = "active";
+                            }
+                            <li data-target="#carousel" data-slide-to="@index" class="@isActive"></li>
+                        }
+                    </ol>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close" style="float: right">&times;</span>
+        <div class="modal-content-inner">
+            <h4 class="modal-text">Confirm</h4>
+            <p class="modal-text">Are you sure you want to set your service <span id="statusConfirmQuestion"></span>?</p>
+            @if (inactive == "")
+            {
+                <p class="modal-text">This will mean that the service will no longer be visible for costumers until you set it back to active.</p>
+            }
+            else
+            {
+                <p class="modal-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et.</p>
+            }
+            <input id="confirmStatusBtn"
+                   class="btn btn-primary"
+                   type="button"
+                   value="Confirm"
+                   onclick="location.href='@Url.Action("SetOfferedServiceStatus", "Profile", new {offeredServiceId = Model.OfferedService.Id})'" />
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        //TODO: Zie "vragen.txt" voor het js gedeelte wat hier eigenlijk stond (EN WERKTE!).
+
+        //Modal pop-up
+        //-----------------------------------------------------------
+
+        var modal = document.getElementById("myModal");
+        var span = document.getElementsByClassName("close")[0]; // Get the <span> element that closes the modal
+
+        $('#statusBtn').on('click',
+            function () {
+                modal.style.display = "block";
+            });
+
+         //When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+        //---------------------------------------------------------
+
+        //Todo (js): Fix notification. Werkt nog niet.
+
+        @if (TempData["IsSetActve"] != null && (bool)TempData["IsSetActve"] == true)
+        {
+            TempData["IsSetActve"] = false;
+            @:alertify.succes("Service is now active");
+        }
+
+        @if (TempData["IsSetInactve"] != null && (bool)TempData["IsSetInactve"] == true)
+        {
+            TempData["IsSetInactve"] = false;
+            @:alertify.succes("Service is now inactive");
+        }
+    </script>
+}

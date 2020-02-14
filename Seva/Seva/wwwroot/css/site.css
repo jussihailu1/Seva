@@ -1,0 +1,276 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+/* Provide sufficient contrast against white background */
+a {
+    color: #0366d6;
+}
+
+.btn-primary {
+    color: #fff !important;
+    background-color: #1b6ec2 !important;
+    border-color: #1861ac !important;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.border-top {
+    border-top: 1px solid #e5e5e5;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+    font-size: 1rem;
+    line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px; /* Vertically center the text there */
+}
+
+
+
+/* My own css
+-------------------------------------------------- */
+
+:root {
+    --darkBlue: #11205e;
+}
+
+#body {
+    background: rgb(17,32,94);
+    background: linear-gradient(0deg, rgba(17,32,94,1) 0%, rgba(0,0,0,1) 100%);
+    color: white;
+}
+
+#nav {
+    background-color: black !important;
+    border-bottom: none !important;
+    color: white !important;
+    width: 100% !important;
+    margin-bottom: 2.5% !important;
+}
+
+    #nav .nav-link {
+        font-size: 1.5em;
+    }
+
+        /*Todo(css):  This doesn't work yet*/
+        #nav .nav-link .active {
+            font-size: 2em;
+        }
+
+.navbar-light .navbar-toggler {
+    background-color: white;
+    border: none
+}
+
+.card {
+    background-color: #232b4a;
+    border-radius: 0;
+}
+
+.form-row {
+    width: 100%
+}
+
+#indexCreateServiceBtn {
+    background-color: var(--darkBlue);
+    border-radius: 0;
+    border: 2px solid white;
+    margin-right: 0 !important;
+}
+
+#averageRatingMin, #averageRatingMax {
+    width: 5.5% !important;
+}
+
+#searchBox {
+    width: 25%;
+}
+
+#categoryFilter {
+    width: 30%;
+}
+
+.form-row * {
+    margin-right: 1%;
+}
+
+.hr {
+    border: 1px solid lightgray;
+}
+
+#results {
+    width: 6% !important;
+}
+
+.hover {
+    cursor: pointer;
+}
+
+.table {
+    background-color: var(--darkBlue) !important;
+    color: white;
+    box-shadow: 0px 0px 80px 10px #00092a;
+}
+
+.tr {
+    background: rgb(22,42,124);
+    background: linear-gradient(180deg, rgba(22,42,124,1) 0%, rgba(17,33,94,1) 100%);
+}
+
+p {
+    color: white !important;
+}
+
+/* Modal pop-up */
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    float: right; /* todo (css): This doesnt work yet??? */
+    font-size: 28px;
+    font-weight: bold;
+}
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+.modal-content-inner {
+    margin-top: 2%;
+}
+
+.modal-text {
+    color: black!important;
+}
+
+/* Validation popup*/
+/* Popup container - can be anything you want */
+.popup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* The actual popup */
+.popup .popuptext {
+    visibility: hidden;
+    width: 160px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -80px;
+}
+
+/* Popup arrow */
+.popup .popuptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+/* Toggle this class - hide and show the popup */
+.popup .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;} 
+    to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+}

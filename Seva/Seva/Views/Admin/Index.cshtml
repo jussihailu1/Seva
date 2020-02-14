@@ -1,0 +1,108 @@
+﻿@model Seva.ViewModels.AdminIndexViewModel
+@{
+    ViewData["Title"] = "Admin";
+}
+
+<h1>Index</h1>
+
+<input style="float: right" type="button" onclick="location.href = '@Url.Action("RegisterAdmin","Admin")'" value="Register admin" class="btn btn-primary" />
+
+<ul class="nav nav-tabs">
+    <li class="nav-item"><a class="nav-link active" role="tab" data-toggle="tab" href="#adminTodaysStats">Today's stats</a></li>
+    <li class="nav-item"><a class="nav-link" role="tab" data-toggle="tab" id="adminUsersTab" href="#adminUsers">Users</a></li>
+    <li class="nav-item"><a class="nav-link" role="tab" data-toggle="tab" id="adminOfferedServicesTab" href="#adminOfferedServices">Offered services</a></li>
+    <li class="nav-item"><a class="nav-link" role="tab" data-toggle="tab" id="adminUsedServicesTab" href="#adminUsedServices">Used services</a></li>
+</ul>
+
+<div class="tab-content" style="border-top: white solid">
+    <div class="tab-pane active" role="tabpanel" id="adminTodaysStats">
+        <h1>Today's stats</h1>
+    </div>
+    <div class="tab-pane" role="tabpanel" id="adminUsers">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Offered services</th>
+                    <th>Used services</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Users)
+                {
+                    int offeredServicesCount = Model.OfferedServices.Count(offeredService => offeredService.Provider.Id == user.Id);
+                    int usedServicesCount = Model.UsedServices.Count(usedService => usedService.Consumer.Id == user.Id);
+                    string redText = user.Status == "Inactive" ? "text-danger" : "";
+
+                    <tr class=" @offeredServicesCount @usedServicesCount hover @redText"
+                        onclick="location.href = '@Url.Action("ViewUser","Admin", new {userId = user.Id})'">
+                        <td>@user.FullName</td>
+                        <td>@offeredServicesCount</td>
+                        <td>@usedServicesCount</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane" role="tabpanel" id="adminOfferedServices">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Average rating</th>
+                    <th>Sells</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var offeredService in Model.OfferedServices)
+                {
+                    int sells = Model.UsedServices.Count(usedService => usedService.OfferedService.Id == offeredService.Id);
+                    string selssClass = "sells" + sells; //This is for filtering
+                    string redText = offeredService.Status == "Inactive" ? "text-danger" : "";
+                    <tr class="@offeredService.Name @offeredService.Category @offeredService.Price @offeredService.AverageRating @selssClass hover @redText service" 
+                        onclick="location.href = '@Url.Action("ViewOfferedService", "Admin", new {offeredServiceId = offeredService.Id})'">
+                        <td>@offeredService.Name</td>
+                        <td>@offeredService.Category</td>
+                        <td>@offeredService.Price.ToString("C")</td>
+                        <td>@offeredService.AverageRating</td>
+                        <td>@sells</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane" role="tabpanel" id="adminUsedServices">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Consumer</th>
+                    <th>Used service</th>
+                    <th>Purchase date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var usedService in Model.UsedServices)
+                {
+                    <tr class="usedService @usedService.DateOfPurchase">
+                        <td>@usedService.Consumer.FullName</td>
+                        <td>@usedService.OfferedService.Name</td>
+                        <td>@usedService.DateOfPurchase</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        @if (TempData["AdminIsCreated"] != null && (bool) TempData["AdminIsCreated"])
+        {
+            @:alertify.succes("Admin is created");
+            TempData["AdminIsCreated"] = false;
+        }
+    </script>
+}

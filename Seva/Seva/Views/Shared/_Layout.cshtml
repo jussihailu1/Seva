@@ -1,0 +1,108 @@
+﻿@using Seva.Factory.Logic
+@using Seva.Interface.ILogics
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seva - @ViewData["Title"]</title>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    @* My own links *@
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+    <link href="~/css/alertify.min.css" rel="stylesheet" />
+    <link href="~/css/slick.css" rel="stylesheet" />
+    <link href="~/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+    <link href="~/css/site.css" rel="stylesheet" />
+</head>
+<body id="body">
+    <header>
+        <nav id="nav" class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" 
+                   style="color: white"
+                   asp-area=""
+                   asp-controller="Home" 
+                   asp-action="Index">Seva</a>
+                <button class="navbar-toggler" 
+                        type="button" 
+                        data-toggle="collapse" 
+                        data-target=".navbar-collapse" 
+                        aria-controls="navbarSupportedContent"
+                        aria-expanded="false" 
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <ul class="navbar-nav flex-grow-1">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            if (User.IsInRole("1"))
+                            {
+                                <li class="nav-item">
+                                    <a asp-action="Index" asp-controller="Admin" class="nav-link text-light">Admin</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-light active" asp-controller="Home" asp-action="Index">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-action="Index" asp-controller="Profile" class="nav-link text-light">Profile</a>
+                                </li>
+                            }
+                            <li class="nav-item">
+                                <a asp-action="SignOut" asp-controller="Login" class="nav-link text-light">Sign out</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a asp-action="Login" asp-controller="Login" class="nav-link text-light">Sing in</a>
+                            </li>
+                            <li class="nav-item">
+                                <a asp-action="Register" asp-controller="Login" class="nav-link text-light">Join</a>
+                            </li>
+                        }
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    @{
+        IUserLogic userLogic = LogicFactory.CreateUserLogic();
+        string userFullName = "";
+        if (User.Identity.IsAuthenticated)
+        {
+            userFullName = "- " + userLogic.GetUserByEmail(User.Identity.Name).FullName;
+        }
+    }
+
+    <footer id="footer" class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2019 - Seva @userFullName
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @* My own scripts *@
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+    <script src="~/js/alertify.min.js"></script>
+    <script src="~/js/slick.js"></script>
+    <script src="~/js/jquery.dataTables.min.js"></script>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

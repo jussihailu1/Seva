@@ -1,0 +1,69 @@
+﻿@model Seva.ViewModels.CreateServiceViewModel
+@{
+    ViewData["Title"] = "Create service";
+    int categoryCount = 0;
+}
+<h1>Create a service</h1>
+
+<hr class="hr"/>
+<div class="row" style="box-shadow: 0px 0px 50px 10px black; padding: 3%">
+    <div class="col-md-4">
+        <form asp-action="CreateService" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Category" class="control-label"></label>
+                <select asp-for="Category" class="form-control">
+                    <option>Select a category</option>
+                    @if (ViewBag.Categories != null)
+                    {
+                        @foreach (var category in ViewBag.Categories)
+                         {
+                             string categoryId = "Category" + categoryCount++;
+                            <option id="@categoryId">@category</option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DeliveryTimeDays" class="control-label"></label>
+                <input asp-for="DeliveryTimeDays" type="number" class="form-control" />
+                <span asp-validation-for="DeliveryTimeDays" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DeliveryTimeHours" class="control-label"></label>
+                <input asp-for="DeliveryTimeHours" type="number" class="form-control" />
+                <span asp-validation-for="DeliveryTimeHours" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageFiles" class="control-label">Image(s) <small>(Must be smaller than 60kb)</small></label>
+                <div id="imageContainer">
+                    <input asp-for="ImageFiles" type="file" name="images" oninput="AddImageInput()" class="form-control-file" />
+                </div>
+                <span asp-validation-for="ImageFiles" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" id="createServiceBtn" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

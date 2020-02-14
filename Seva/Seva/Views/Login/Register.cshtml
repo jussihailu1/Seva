@@ -1,0 +1,74 @@
+﻿@model Seva.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+
+}
+
+<h1>Register</h1>
+
+<hr class="hr"/>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Register">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" id="emailInput" type="email" class="form-control" />
+                <span asp-validation-for="Email" id="checkEmailResult" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PasswordConfirm" class="control-label"></label>
+                <input asp-for="PasswordConfirm"type="password" class="form-control" />
+                <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" id="registerBtn" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<a href="@Url.Action("Login")">Or sign in here</a>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $('#emailInput').on('change',
+            function () {
+                var emailToCheck = document.getElementById('emailInput').value;
+                $.ajax({        // Do this asynchronously
+                    type: 'POST',                    // GET-method, so data is passed through URL lol
+                    url: '/CheckEmailExistance/' + emailToCheck,   // This is the URL we're calling, should match routing scheme
+                    success: function (result) {    // Dit is de Json torrie die gereturned wordt vanuit de controller.
+                        if (result == "Exists") {
+                            if (document.getElementById('checkEmailResult').innerHTML == "") {
+                                document.getElementById('checkEmailResult').innerHTML = "Email is already in use";
+                            }
+                        }
+                    },
+                    error: function (error) {
+                        console.log("Error");
+                        console.log(error);
+                    }
+                });
+            });
+    </script>
+}

@@ -1,0 +1,155 @@
+﻿@model Seva.ViewModels.HomeViewModel
+@{
+    ViewData["Title"] = "Home Page";
+    var categories = (List<string>)ViewData["Categories"];
+}
+
+<div class="form-row">
+    <input type="text" class="form-control filter" id="searchBox" placeholder="Search for a service..." />
+    <select class="form-control filter" id="categoryFilter">
+        <option>Select category</option>
+        @foreach (var category in categories)
+        {
+            <option>@category</option>
+        }
+    </select>
+    <label style="margin-left: 2%">Minimum rating</label>
+    <input type="number" min="0" max="10" class="form-control filter" id="averageRatingMin" value="0" />
+    <label style="margin-left: 2%">Maximum rating</label>
+    <input type="number" min="0" max="10" class="form-control filter" id="averageRatingMax" value="10" />
+    <div class="form-group col-md-2">
+        <label>Image indicators</label>
+        <input type="checkbox" data-toggle="toggle" checked onchange="ToggleImageIndicators(this.checked)" data-size="xs">
+    </div>
+    <div><button id="indexCreateServiceBtn" class="btn btn-primary" onclick="location.href='@Url.Action("CreateService","Market")'">Upload a service</button></div>
+</div>
+
+<hr class="hr" />
+
+<div class="form-row">
+    <p>Show</p>
+    <select id="results" class="form-control">
+        <option>10</option>
+        <option>20</option>
+        <option>50</option>
+    </select>
+    <p>out of <span id="resultCount"></span> results</p>
+</div>
+
+<div class="container mt-3">
+    <div class="row">
+        <div class="card-deck" id="card-deck">
+            @for (int i = 0; i < 1; i++)
+            {
+                @foreach (var service in Model.OfferedServices)
+                {
+                    int itemIndex = Model.OfferedServices.IndexOf(service);
+                    string carouselId = "carousel-" + itemIndex;
+                    string category = "category" + service.Category;
+                    string name = "name" + service.Name;
+
+                    if (category.Contains(' '))
+                    {
+                        category = "categroy";
+                        service.Category.ToList().Where(c => c != ' ').ToList().ForEach(c => category += c);
+                    }
+
+                    if (name.Contains(' '))
+                    {
+                        name = "name";
+                        service.Name.ToList().Where(c => c != ' ').ToList().ForEach(c => name += c);
+                    }
+
+                    //NIET DE POSITIE VAN DE CLASSES VERANDEREN. DOE JE DAT WEL, FIX GELIJK DE JS GEZEIK. (ctrl+f in site.js: "item.classlist")
+                    <div class="card mb-4 service @category @name @service.Price @service.AverageRating"
+                         style="min-width: 12rem; max-width: 12rem;">
+
+                        @* Crousel *@
+                        <div class="carousel slide" data-ride="carousel" id="@carouselId" data-interval="false">
+                            <div class="carousel-inner" role="listbox">
+                                @if (service.Images.Count > 0)
+                                {
+
+                                    @foreach (var image in service.Images)
+                                    {
+                                        string isActive = "";
+                                        if (service.Images.IndexOf(image) == 0)
+                                        {
+                                            isActive = "active";
+                                        }
+                                        <div class="carousel-item @isActive">
+                                            <img class="w-100 d-block " src="@Url.Content(image)" alt="@service.Name">
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="carousel-item active">
+                                        <img class="w-100 d-block" src="~/img/image not found.png" alt="No images found">
+                                    </div>
+                                }
+                            </div>
+                            @if (service.Images.Count > 1)
+                            {
+                                //Carousel control buttons
+                                <div>
+                                    <a class="carousel-control-prev" href="#@carouselId" role="button" data-slide="prev">
+                                        <span class="carousel-control-prev-icon"></span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                    <a class="carousel-control-next" href="#@carouselId" role="button" data-slide="next">
+                                        <span class="carousel-control-next-icon"></span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </div>
+                                //Carousel indicators
+                                <ol class="carousel-indicators">
+                                    @foreach (var image in service.Images)
+                                    {
+                                        string isActive = "";
+                                        int index = service.Images.IndexOf(image);
+                                        if (index == 0)
+                                        {
+                                            isActive = "active";
+                                        }
+                                        <li data-target="#@carouselId" data-slide-to="@index" class="@isActive"></li>
+                                    }
+                                </ol>
+                            }
+                        </div>
+
+                        <div class="card-body hover" onclick="location.href = '@Url.Action("ViewOfferedService", "Home", new {offeredServiceId = service.Id})'">
+                            <h5 class="card-title">@service.Name <small>@service.Price.ToString("C")</small></h5>
+                            <p class="card-text">@service.Category</p>
+                            <p class="card-text">@service.AverageRating</p>
+                            <p class="card-text">@service.Description</p>
+                            <p class="card-text"><small class="text-muted">@service.Provider.FullName</small></p>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        @if (TempData["AccountIsCreated"] != null && (bool)TempData["AccountIsCreated"] == true)
+        {
+            @:alertify.success('Welcome to Seva');
+            TempData["AccountIsCreated"] = false;
+        }
+
+        @if(TempData["ServiceIsCreated"] != null  && (bool)TempData["ServiceIsCreated"] == true)
+        {
+            @:alertify.success('Service is created!');
+            TempData["ServiceIsCreated"] = null;
+        }
+
+        @if(TempData["ServiceIsPurchased"] != null && (bool)TempData["ServiceIsPurchased"] == true)
+        {
+            @:alertify.success('Service is purchased!');
+            TempData["ServiceIsPurchased"] = null;
+        }
+    </script>
+}

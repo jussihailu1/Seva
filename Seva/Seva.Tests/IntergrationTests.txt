@@ -1,0 +1,98 @@
+﻿
+[TestClass]
+..... : IDisposable
+
+private IWebDriver _driver;
+
+[TestInitialize]
+public void Setup()
+{
+    _driver = new ChromeDriver();
+}
+
+[TestMethod]
+public void Can_Be_Loaded()
+{
+    _driver.Navigate().GoToUrl("");
+    var result = _driver.Title == "Seva - Welcome";
+
+    Assert.IsTrue(result);
+}
+
+public void Dispose()
+{
+    _driver.Close();
+    _driver.Dispose();
+}
+
+---------------------------------------------------------------------------
+
+public static  string Tester1Name { get; } = "TESTER";
+public static string Tester2Name { get; } = "TESTER2";
+public static string OfferedServiceTestName { get; } = "TESTCREATESERVICE";
+public static string OfferedServiceTestNameForView { get; } = "TESTVIEWCREATEDSERVICE";
+
+private static readonly IWebDriver Driver = new ChromeDriver();
+
+private readonly Uri _homeUri = new Uri("https://localhost:44322/");
+private readonly Uri _loginUri = new Uri("https://localhost:44322/Login/Login");
+private readonly Uri _registerUri = new Uri("https://localhost:44322/Login/Register");
+private readonly Uri _signOutUri = new Uri("https://localhost:44322/Login/SignOut");
+private readonly Uri _createServiceUri = new Uri("https://localhost:44322/Market/CreateService");
+private readonly Uri _profileUri = new Uri("https://localhost:44322/Profile/Index");
+private readonly Uri _editProfileUri = new Uri("https://localhost:44322/Profile/EditProfile");
+private readonly Uri _editOfferedServiceUri = new Uri("https://localhost:44322/Profile/EditOfferedService?offeredServiceId=44");
+private readonly Uri _adminHomeUri = new Uri("https://localhost:44322/Admin/Index");
+private readonly Uri _adminRegisterUri = new Uri("https://localhost:44322/Admin/RegisterAdmin");
+
+private void Login()
+{
+	var userName = "TESTER";
+    _driver.Navigate().GoToUrl(_homeUri);
+    if (_driver.FindElement(By.Id("footer")).Text.Length > "© 2019 - Seva".Length) _driver.Navigate().GoToUrl(_signOutUri);
+    _driver.Navigate().GoToUrl(_loginUri);
+    _driver.FindElement(By.Name("Email")).SendKeys($"{userName.Substring(0, 1)}.{userName}@SEVA.COM");
+    _driver.FindElement(By.Name("Password")).SendKeys(userName);
+    _driver.FindElement(By.Id("loginBtn")).Click();
+}
+
+private void Login(string userName)
+{
+    _driver.Navigate().GoToUrl(_homeUri);
+    if (_driver.FindElement(By.Id("footer")).Text.Length > "© 2019 - Seva".Length) _driver.Navigate().GoToUrl(_signOutUri);
+    _driver.Navigate().GoToUrl(_loginUri);
+    _driver.FindElement(By.Name("Email")).SendKeys($"{userName.Substring(0, 1)}.{userName}@SEVA.COM");
+    _driver.FindElement(By.Name("Password")).SendKeys(userName);
+    _driver.FindElement(By.Id("loginBtn")).Click();
+}
+
+private void CreateService(string serviceName)
+{
+    _driver.Navigate().GoToUrl(CreateServiceUri);
+	
+    _driver.FindElement(By.Name("Name")).SendKeys(serviceName);
+    _driver.FindElement(By.Name("Category")).Click();
+    _driver.FindElement(By.Id("Category1")).Click();
+    _driver.FindElement(By.Name("DeliveryTimeDays")).SendKeys("1");
+    _driver.FindElement(By.Name("DeliveryTimeHours")).SendKeys("1");
+    _driver.FindElement(By.Name("images")).SendKeys(@"C:\Users\jussi\OneDrive\Documenten\GitHub\SevaV4\Seva\Seva\wwwroot\img\TEST.png");
+    _driver.FindElement(By.Name("Price")).SendKeys("100");
+    _driver.FindElement(By.Name("Description")).SendKeys("TEST");
+    _driver.FindElement(By.Id("createServiceBtn")).Click();
+}
+
+private string GenerateRandomString(int charCount)
+{
+    var name = "TEST";
+    for (int i = 0; i < charCount; i++)
+    {
+        string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        name += chars[new Random().Next(0, 26)];
+    }
+    return name;
+}
+
+---------------------------------------------------------------------------
+
+
+Assert.Fail("Not implemented yet");

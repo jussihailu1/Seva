@@ -1,0 +1,107 @@
+﻿@using Seva.ViewModels
+@model Seva.ViewModels.WriteReviewViewModel
+
+@{
+    ViewData["Title"] = "WriteReview";
+}
+
+<h1>Write a review</h1>
+
+<hr class="hr"/>
+<div class="row"  style="box-shadow: 0px 0px 50px 10px black; padding: 3%">
+    <div class="col-md-4">
+        <form asp-action="WriteReview">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" type="text" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Rating" class="control-label"></label>
+                <input asp-for="Rating" required type="number" class="form-control" />
+                <span asp-validation-for="Rating" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Text" class="control-label"></label>
+                <textarea asp-for="Text" class="form-control" placeholder="Write your review here"></textarea>
+                <span asp-validation-for="Text" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" id="writeReviewBtn" value="Create" class="btn btn-primary" />
+            </div>
+            <a asp-controller="Profile" asp-action="Index">Or write a review after the experience</a>
+        </form>
+    </div>
+    <div class="col">
+
+        @{
+            string carouselId = "carousel";
+            var service = Model.OfferedService;
+        }
+
+        <div class="card mb-4" style="min-width: 12rem; max-width: 12rem;">
+
+            @* Crousel *@
+            <div class="carousel slide" data-ride="carousel" id="@carouselId" style="height: 200px;" data-interval="false">
+                <div class="carousel-inner" role="listbox">
+                    @if (service.Images.Count > 0)
+                    {
+
+                        @foreach (var image in service.Images)
+                         {
+                             string isActive = "";
+                             if (service.Images.IndexOf(image) == 0)
+                             {
+                                 isActive = "active";
+                             }
+                             <div class="carousel-item @isActive">
+                                 <img class="w-100 d-block " src="@Url.Content(image)" alt="Slide ImageAsString">
+                             </div>
+                         }
+                    }
+                    else
+                    {
+                        <div class="carousel-item active">
+                            <img class="w-100 d-block" src="~/img/image not found.png" alt="Slide ImageAsString">
+                        </div>
+                    }
+                </div>
+                @if (service.Images.Count > 1)
+                {
+                    //Carousel control buttons
+                    <div>
+                        <a class="carousel-control-prev" href="#@carouselId" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#@carouselId" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                    //Carousel indicators
+                    <ol class="carousel-indicators">
+                        @foreach (var image in service.Images)
+                        {
+                            string isActive = "";
+                            int index = service.Images.IndexOf(image);
+                            if (index == 0)
+                            {
+                                isActive = "active";
+                            }
+                            <li data-target="#@carouselId" data-slide-to="@index" class="@isActive"></li>
+                        }
+                    </ol>
+                }
+            </div>
+
+            <div class="card-body hover" onclick="location.href = '@Url.Action("ViewOfferedService", "Home", new {offeredServiceId = service.Id})'">
+                <h5 class="card-title">@service.Name</h5>
+                <p class="card-text">@service.Category</p>
+                <p class="card-text">@service.Description</p>
+                <p class="card-text"><small class="text-muted">@service.Provider.FullName</small></p>
+            </div>
+        </div>
+    </div>
+</div>

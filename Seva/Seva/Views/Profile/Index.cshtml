@@ -1,0 +1,158 @@
+﻿@model Seva.ViewModels.ProfileViewModel
+
+@{
+    ViewData["Title"] = "Profile";
+
+    var meIsActive = "active";
+    var myOfferedServicesIsActive = "";
+
+    if (TempData["ServiceIsEdited"] != null)
+    {
+        meIsActive = "";
+        myOfferedServicesIsActive = "active";
+    }
+}
+
+<h1>Profile</h1>
+
+<ul class="nav nav-tabs">
+    <li class="nav-item"><a class="nav-link @meIsActive" role="tab" data-toggle="tab" id="userInfoTab" href="#userInfo">Me</a></li>
+    <li class="nav-item"><a class="nav-link @myOfferedServicesIsActive" role="tab" data-toggle="tab" id="offeredServicesTab" href="#offeredServices">Offered services</a></li>
+    <li class="nav-item"><a class="nav-link" role="tab" data-toggle="tab" id="usedServicesTab" href="#usedServices">Used services</a></li>
+</ul>
+
+<div class="tab-content" style="border-top: white solid; box-shadow: 0px 0px 50px 10px black; padding: 3%">
+    <div class="tab-pane @meIsActive" role="tabpanel" id="userInfo">
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.FirstName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.FirstName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.LastName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.LastName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Email)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+        </dl>
+
+        <a href="@Url.Action("EditProfile")">Edit profile</a>
+    </div>
+    @if (Model.OfferedServiceViewModels.Count > 0)
+    {
+        <div class="tab-pane @myOfferedServicesIsActive" role="tabpanel" id="offeredServices">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Delivery time</th>
+                        <th>Price</th>
+                        <th>Average rating</th>
+                        <th>Date of post</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var service in Model.OfferedServiceViewModels)
+                    {
+                        var textDanger = service.Status == "Active" ? "" : "text-danger";
+                        <tr class="tr hover offeredService" onclick="location.href = '@Url.Action("MyOfferedService", "Profile", new {myOfferedServiceId = service.Id})'">
+                            <td class="@textDanger">@service.Name</td>
+                            <td>@service.Category</td>
+                            <td>@service.DeliveryTimeDays day(s), @service.DeliveryTimeHours hour(s)</td>
+                            <td>@service.Price.ToString("C")</td>
+                            <td>@service.AverageRating</td>
+                            <td>@service.DateOfPost</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="tab-pane" role="tabpanel" id="offeredServices">
+            <h3 class="text-center"><a href="@Url.Action("CreateService","Market")">Upload a service!</a></h3>
+        </div>
+    }
+    @if (Model.UsedServiceViewModels.Count > 0)
+    {
+        <div class="tab-pane" role="tabpanel" id="usedServices">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Purchase date</th>
+                        <th>Your review</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var usedService in Model.UsedServiceViewModels)
+                    {
+                        <tr class="usedService">
+                            <td>@usedService.OfferedService.Name</td>
+                            <td>@usedService.OfferedService.Price.ToString("C")</td>
+                            <td>@usedService.OfferedService.DateOfPost</td>
+                            @if (usedService.Review != null)
+                            {
+                                var reviewText = usedService.Review.Text.Length > 50 ? usedService.Review.Text.Substring(0, 50) + "..." : usedService.Review.Text;
+                                <td><b>@usedService.Review.Rating <span>&#9733;</span> @usedService.Review.Title</b> | @reviewText</td>
+                            }
+                            else
+                            {
+                                <td><a href="@Url.Action("WriteReview","Market",new{offeredServiceId = usedService.OfferedService.Id})">Write a review now!</a></td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    }
+    else
+    {
+        <div class="tab-pane" role="tabpanel" id="usedServices">
+            <h3 class="text-center"><a href="@Url.Action("Index","Home")">Check some awesome services!</a></h3>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        var i = 0;
+        $('#buttonDemoAjax').on('click',
+            function() {
+                // Get the value of the #fullName textbox
+                console.log(478);
+                var fullName = "jussi" + ++i;               //TODO: HIER VERDER GAAN. EINDDOEL: User kan dienst actief/inactief zetten.
+                $.ajax({        // Do this asynchronously
+                    type: 'POST',                    // GET-method, so data is passed through URL
+                    url: '/ajaxdemo/' + fullName,   // This is the URL we're calling, should match routing scheme
+                    success: function (result) {    // On-success use this anonymous function
+                        $('#result').html(result);  // Display the result in the #result-element on the page.
+                        alertify.success('ajaxdemo');
+                    }
+                });
+            });
+
+        @if(TempData["ServiceIsEdited"] != null)
+        {
+            @:alertify.success('Service is edited');
+        }
+    </script>
+}
